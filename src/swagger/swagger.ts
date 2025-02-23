@@ -9,6 +9,20 @@ const options: swaggerJSDoc.Options = {
       description:
         "API to configure movie theaters and manage reservations",
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [],
+      },
+    ],
   },
   apis: ["./src/routes/*.ts"], // Routes where Swagger will look for the API definition
 };
