@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  password String
+  status Boolean
+  userRoles User_Role[]
+  reservations Reservations[]
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  name String
+  userRoles User_Role[]
+}
+
+model User_Role {
+  id Int @id @default(autoincrement())
+  userId Int
+  roleId Int
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+}
+
+model Theaters {
+  id Int @id @default(autoincrement())
+  name String
+  movieId Int
+  capacity Json
+  movie Movie @relation(fields: [movieId], references: [id])
+  seats Seats[]
+  reservations Reservations[]
+}
+
+model Movie {
+  id Int @id @default(autoincrement())
+  title String
+  posterImage String
+  description String
+  theaters Theaters[]
+}
+
+model Seats {
+  id Int @id @default(autoincrement())
+  theaterId Int
+  row Int
+  col Int
+  statusId Int
+  theater Theaters @relation(fields: [theaterId], references: [id])
+  reservationSeat Reservation_Seats[]
+  status Status_Seat @relation(fields: [statusId], references: [id])
+}
+
+model Reservations {
+  id Int @id @default(autoincrement())
+  userId Int
+  theaterId Int
+  reservationDate DateTime
+  user User @relation(fields: [userId], references: [id])
+  theater Theaters @relation(fields: [theaterId], references: [id])
+  reservationSeat Reservation_Seats[]
+}
+
+model Reservation_Seats {
+  id Int @id @default(autoincrement())
+  reservationId Int
+  seatsId Int
+  reservation Reservations @relation(fields: [reservationId], references: [id])
+  seats Seats @relation(fields: [seatsId], references: [id])
+}
+
+model Status_Seat {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  seats Seats[]
+}
