@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import { loginUser, registerUser } from "../controllers/authController";
+import { validateRegisterUser } from "../middlewares/validateRegisterUser";
 
 const router: Router = express.Router();
 
@@ -40,7 +41,7 @@ const router: Router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.post("/register", registerUser);
+router.post("/register", validateRegisterUser, registerUser);
 
 /**
  * @swagger
