@@ -1,5 +1,5 @@
 {
-  "name": "cine-api",
+  "name": "movie-api",
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
@@ -17,7 +17,7 @@
     "array-flatten": "^1.1.1",
     "aws-ssl-profiles": "^1.1.2",
     "balanced-match": "^1.0.2",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
     "brace-expansion": "^1.1.11",
     "buffer-equal-constant-time": "^1.0.1",
@@ -179,10 +179,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-      "start": "node dist/server.js",
-      "dev": "ts-node src/server.ts",
-      "prisma:migrate": "npx prisma migrate dev",
-      "prisma:generate": "npx prisma generate"
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:generate": "npx prisma generate"
   },
   "keywords": [],
   "author": "",

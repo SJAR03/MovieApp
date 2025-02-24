@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  backend:
+    build: ./MovieAPI
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: "mysql://root:1234@db:3306/movieDB"
+      JWT_SECRET: "cjweoigherocneroibvirevbervnreovervre"
+      PORT: 4000
+    depends_on:
+      - db
+    volumes:
+      - ./MovieAPI:/app
+      - /app/node_modules
+  frontend:
+    build: ./MovieWEB
+    ports:
+      - "80:80"
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: "1234"
+      MYSQL_DATABASE: "movieDB"
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+volumes:
+  db-data:
