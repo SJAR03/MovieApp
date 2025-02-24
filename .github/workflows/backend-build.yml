@@ -1,0 +1,21 @@
+name: Build Backend (Develop)
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: MovieAPI/node_modules
+          key: ${{ runner.os }}-MovieAPI-${{ hashFiles('MovieAPI/package-lock.json') }}
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./MovieAPI
+      - name: Build docker image
+        run: docker build -t backend-image-develop ./MovieAPI
