@@ -2,10 +2,11 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import { ApiError, BadRequestError, UnauthorizedError } from "../utils/ApiError";
+import { RegisterUserRequest, LoginUserRequest } from "../utils/types/auth";
 
 const prisma = new PrismaClient();
 
-export const registerUserService = async (userData: any) => {
+export const registerUserService = async (userData: RegisterUserRequest) => {
   // Check if the user already exists
   const existingUser = await prisma.user.findUnique({
     where: {
@@ -38,7 +39,7 @@ export const registerUserService = async (userData: any) => {
   return user;
 };
 
-export const loginUserService = async (credencials: any) => {
+export const loginUserService = async (credencials: LoginUserRequest) => {
   const user = await prisma.user.findUnique({
     where: {
       email: credencials.email,
@@ -53,7 +54,7 @@ export const loginUserService = async (credencials: any) => {
     user.password
   );
   if (!passWordMatch) {
-    throw new Error("Invalid credentials");
+    throw new UnauthorizedError("Invalid credentials");
   }
 
   // Get the user role
