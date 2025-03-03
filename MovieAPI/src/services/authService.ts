@@ -1,20 +1,31 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import { ApiError, BadRequestError, UnauthorizedError } from "../utils/ApiError";
+import { ApiError, BadRequestError, UnauthorizedError } from '../utils/ApiError';
 import { RegisterUserRequest, LoginUserRequest } from "../utils/types/auth";
 
 const prisma = new PrismaClient();
 
 export const registerUserService = async (userData: RegisterUserRequest) => {
-  // Check if the user already exists
-  const existingUser = await prisma.user.findUnique({
+  // Check if the user already exists by username and email
+  
+  const existingUsername = await prisma.user.findUnique({
+    where: {
+      username: userData.username
+    },
+  })
+
+  if (existingUsername) {
+    throw new BadRequestError("Username already in use");
+  }
+  
+  const existingEmailUser = await prisma.user.findUnique({
     where: {
       email: userData.email
     },
   });
 
-  if (existingUser) {
+  if (existingEmailUser) {
     throw new BadRequestError("Email already in use");
   }
 
@@ -22,6 +33,7 @@ export const registerUserService = async (userData: RegisterUserRequest) => {
   const user = await prisma.user.create({
     data: {
       name: userData.name,
+      username: userData.username,
       email: userData.email,
       password: hashedPassword,
       status: true,
@@ -42,7 +54,7 @@ export const registerUserService = async (userData: RegisterUserRequest) => {
 export const loginUserService = async (credencials: LoginUserRequest) => {
   const user = await prisma.user.findUnique({
     where: {
-      email: credencials.email,
+      username: credencials.username,
     },
   });
   if (!user) {

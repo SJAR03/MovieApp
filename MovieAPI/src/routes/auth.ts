@@ -29,6 +29,8 @@ const router: Router = express.Router();
  *             properties:
  *               name:
  *                 type: string
+ *               username:
+ *                 type: string
  *               email:
  *                 type: string
  *               password:
@@ -59,7 +61,7 @@ router.post("/register", validateRegisterUser, registerUser);
  *           schema:
  *             type: object
  *             properties:
- *               email:
+ *               username:
  *                 type: string
  *               password:
  *                 type: string

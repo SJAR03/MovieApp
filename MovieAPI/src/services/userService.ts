@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { NotFoundError } from '../utils/ApiError';
 
 export interface ActiveUsersResult {
-  users: { id: number; name: string; email: string }[];
+  users: { id: number; name: string; username: string, email: string }[];
   total: number;
 }
 
@@ -13,7 +13,7 @@ export const listActiveUsersService = async (skip: number, limit: number): Promi
         const [users, total] = await prisma.$transaction([
             prisma.user.findMany({
                 where: { status: true },
-                select: { id: true, name: true, email: true },
+                select: { id: true, name: true, username: true, email: true },
                 skip,
                 take: limit,
             }),
@@ -23,7 +23,7 @@ export const listActiveUsersService = async (skip: number, limit: number): Promi
     } else {
         const users = await prisma.user.findMany({
             where: { status: true },
-            select: { id: true, name: true, email: true },
+            select: { id: true, name: true, username: true, email: true },
         });
         return { users, total: users.length };
     }
