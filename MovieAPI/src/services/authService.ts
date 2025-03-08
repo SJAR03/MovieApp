@@ -1,14 +1,39 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
+import { ApiError, BadRequestError, UnauthorizedError } from '../utils/ApiError';
+import { RegisterUserRequest, LoginUserRequest } from "../utils/types/auth";
 
 const prisma = new PrismaClient();
 
-export const registerUserService = async (userData: any) => {
+export const registerUserService = async (userData: RegisterUserRequest) => {
+  // Check if the user already exists by username and email
+  
+  const existingUsername = await prisma.user.findUnique({
+    where: {
+      username: userData.username
+    },
+  })
+
+  if (existingUsername) {
+    throw new BadRequestError("Username already in use");
+  }
+  
+  const existingEmailUser = await prisma.user.findUnique({
+    where: {
+      email: userData.email
+    },
+  });
+
+  if (existingEmailUser) {
+    throw new BadRequestError("Email already in use");
+  }
+
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   const user = await prisma.user.create({
     data: {
       name: userData.name,
+      username: userData.username,
       email: userData.email,
       password: hashedPassword,
       status: true,
@@ -26,14 +51,14 @@ export const registerUserService = async (userData: any) => {
   return user;
 };
 
-export const loginUserService = async (credencials: any) => {
+export const loginUserService = async (credencials: LoginUserRequest) => {
   const user = await prisma.user.findUnique({
     where: {
-      email: credencials.email,
+      username: credencials.username,
     },
   });
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new UnauthorizedError("Invalid credentials");
   }
 
   const passWordMatch = await bcrypt.compare(
@@ -41,7 +66,7 @@ export const loginUserService = async (credencials: any) => {
     user.password
   );
   if (!passWordMatch) {
-    throw new Error("Invalid credentials");
+    throw new UnauthorizedError("Invalid credentials");
   }
 
   // Get the user role
@@ -54,12 +79,17 @@ export const loginUserService = async (credencials: any) => {
 
   const roles = userRole.map((userRole) => userRole.role.name);
 
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    throw new Error("JWT secret not defined");
+  }
+
   const token = jwt.sign(
     {
       userId: user.id,
       roles: roles, //include the roles in the token
     },
-    process.env.JWT_SECRET || "secret",
+    jwtSecret,
     {
       expiresIn: "1h",
     }

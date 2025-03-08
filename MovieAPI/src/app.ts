@@ -12,6 +12,9 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/', routes);
 
-app.use(errorHandler);
+// Middleware to handle errors
+app.use((err: any, req: any, res: any, next: any) => {
+    errorHandler(err, req, res, next);
+});
 
 export default app;
