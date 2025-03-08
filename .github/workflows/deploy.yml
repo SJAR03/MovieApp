@@ -19,6 +19,7 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USER }}
           key: ${{ secrets.DIGITALOCEAN_PRIVATE_KEY }}
+          passphrase: ${{ secrets.DIGITALOCEAN_PASSPHRASE }}
           script: |
             cd /apps/MovieApp # Where is the project
             git pull origin master
