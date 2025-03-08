@@ -19,8 +19,8 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USER }}
           key: ${{ secrets.DIGITALOCEAN_PRIVATE_KEY }}
-          scripts: |
+          script: |
             cd /apps/MovieApp # Where is the project
             git pull origin master
             docker-compose down --remove-orphans
-            docker-compose up --build -d
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} JWT_SECRET=${{ secrets.JWT_SECRET }} docker-compose up --build -d
