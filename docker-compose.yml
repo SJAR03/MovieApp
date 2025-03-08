@@ -18,7 +18,9 @@ services:
     ports:
       - "80:80"
   db:
-    image: mysql:8.0
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       MYSQL_ROOT_PASSWORD: "$MYSQL_ROOT_PASSWORD"
       MYSQL_DATABASE: "movieDB"
