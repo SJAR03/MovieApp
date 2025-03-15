@@ -16,7 +16,7 @@ services:
   frontend:
     build: ./MovieWEB
     ports:
-      - "80:80"
+      - "8080:80"
   db:
     build:
       context: .
