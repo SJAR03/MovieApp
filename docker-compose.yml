@@ -3,7 +3,7 @@ services:
   backend:
     build: ./MovieAPI
     ports:
-      - "4000:4000"
+      - "127.0.0.1:4000:4000"
     environment:
       DATABASE_URL: "mysql://root:$MYSQL_ROOT_PASSWORD@db:3306/movieDB"
       JWT_SECRET: "$JWT_SECRET"
@@ -16,7 +16,7 @@ services:
   frontend:
     build: ./MovieWEB
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
   db:
     build:
       context: .
