@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { UnauthorizedError } from "../utils/ApiError";
+import { UnauthorizedError } from "../../utils/ApiError";
 
 
 export const roleMiddleware = (roles: string[]) => {
