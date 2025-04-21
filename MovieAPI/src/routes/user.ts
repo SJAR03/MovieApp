@@ -1,6 +1,6 @@
 import express, { Router } from "express";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { roleMiddleware } from "../middlewares/roleMiddleware";
+import { authMiddleware } from "../middlewares/Auth/authMiddleware";
+import { roleMiddleware } from "../middlewares/Auth/roleMiddleware";
 import { disableUser, listActiveUsers } from "../controllers/userController";
 
 
