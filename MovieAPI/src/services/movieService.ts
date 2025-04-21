@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { ApiError, BadRequestError, UnauthorizedError } from '../utils/ApiError';
+import { BadRequestError } from '../utils/ApiError';
 import { RegisterMovieRequest } from '../utils/types/movie';
 
 const prisma = new PrismaClient();
