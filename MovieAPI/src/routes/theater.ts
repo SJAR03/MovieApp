@@ -50,7 +50,7 @@ const router: Router = express.Router();
  *               - capacity
  *     responses:
  *       201:
- *         description: Movie created successfully
+ *         description: Theater created successfully
  *       401:
  *         description: Unauthorized
  *       403:
