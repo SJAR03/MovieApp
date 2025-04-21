@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { UnauthorizedError } from "../utils/ApiError";
+import { UnauthorizedError } from "../../utils/ApiError";
 import jwt, {JwtPayload} from "jsonwebtoken";
 
 interface UserPayload extends JwtPayload {

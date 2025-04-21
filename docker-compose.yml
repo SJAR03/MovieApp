@@ -6,6 +6,7 @@ services:
       - "127.0.0.1:4000:4000"
     environment:
       DATABASE_URL: "mysql://root:$MYSQL_ROOT_PASSWORD@db:3306/movieDB"
+      #DATABASE_URL: "mysql://sjar:$MYSQL_ROOT_PASSWORD@137.184.82.229:3306/movieDB"
       JWT_SECRET: "$JWT_SECRET"
       PORT: 4000
     depends_on:
