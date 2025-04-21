@@ -10,7 +10,7 @@ const router: Router = express.Router();
  * @swagger
  * tags:
  *   name: Movie
- *   description: Endpoints for manage movies
+ *   description: Endpoints for managing movies
  */
 
 /**
