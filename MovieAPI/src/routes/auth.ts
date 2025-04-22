@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { loginUser, registerUser } from "../controllers/authController";
+import { loginUser, registerUser, verifyToken } from "../controllers/authController";
 import { validateRegisterUser } from "../middlewares/Auth/validateRegisterUser";
 
 const router: Router = express.Router();
@@ -81,5 +81,25 @@ router.post("/register", validateRegisterUser, registerUser);
  *         description: Internal server error
  */
 router.post("/login", loginUser);
+
+/**
+ * @swagger
+ * /auth/verify-token:
+ *   get:
+ *     tags: 
+ *       - Auth
+ *     summary: Verify if the token is valid
+ *     description: Return 200 if valid, 400 if not
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Valid token
+ *       401:
+ *         description: No valid token
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/verify-token", verifyToken);
 
 export default router;
