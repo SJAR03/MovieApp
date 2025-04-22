@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import { ApiError, BadRequestError, UnauthorizedError } from '../utils/ApiError';
+import { BadRequestError, UnauthorizedError } from '../utils/ApiError';
 import { RegisterUserRequest, LoginUserRequest } from "../utils/types/auth";
 
 const prisma = new PrismaClient();
@@ -96,4 +96,17 @@ export const loginUserService = async (credencials: LoginUserRequest) => {
   );
 
   return token;
+};
+
+export const verifyTokenService = async (token: string): Promise<void> => {
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    throw new Error("JWT secret not defined");
+  }
+  try {
+    jwt.verify(token, jwtSecret);
+    return; // If valid, no need to return anything
+  } catch (error) {
+    throw new Error("Token inválido");
+  }
 };

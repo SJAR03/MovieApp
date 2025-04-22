@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
-import { loginUserService, registerUserService } from '../services/authService';
+import { NextFunction, Request, Response, RequestHandler } from 'express';
+import { loginUserService, registerUserService, verifyTokenService } from '../services/authService';
 import { LoginUserRequest, RegisterUserRequest } from '../utils/types/auth';
 
 export const registerUser = async (req: Request<{}, {}, RegisterUserRequest>, res: Response, next: NextFunction) => {
@@ -18,4 +18,22 @@ export const loginUser = async (req: Request<{}, {}, LoginUserRequest>, res: Res
     } catch (error: any) {
         next(error); // Pass the error to the error handler middleware
     }
+};
+
+export const verifyToken: RequestHandler = async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(401).json({ message: "Token no proporcionado" });
+    return;
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    await verifyTokenService(token);
+    res.status(200).send();
+  } catch (error: any) {
+    res.status(401).json({ message: error.message });
+  }
 };
