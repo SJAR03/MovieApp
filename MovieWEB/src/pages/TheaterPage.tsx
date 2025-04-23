@@ -16,6 +16,7 @@ import SeatGrid from "../components/SeatGrid";
 import { addDays, format } from "date-fns";
 import PaymentModal from "../components/PaymentModal";
 import BookingSuccessModal from "../components/ReservationSucessModal";
+import AppNavbar from "../components/AppNavBar";
 
 function TheaterPage() {
   const { id } = useParams<{ id: string }>();
@@ -148,60 +149,63 @@ function TheaterPage() {
   };
 
   return (
-    <Box sx={{ padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        {theater?.name}
-      </Typography>
-      <Typography variant="subtitle1" gutterBottom>
-        {theater?.movie.title}
-      </Typography>
-      <DatePicker onDateChange={handleDateChange} />
-      <Box mt={3}>
-        {theater?.capacity && (
-          <SeatGrid
-            rows={theater.capacity.rows}
-            cols={theater.capacity.cols}
-            seats={seats}
-            selectedSeats={selectedSeats}
-            onSeatSelect={handleSeatSelect}
-          />
-        )}
-      </Box>
-      {selectedSeats.length > 0 && (
+    <>
+      <AppNavbar />
+      <Box sx={{ padding: 2 }}>
+        <Typography variant="h4" gutterBottom>
+          {theater?.name}
+        </Typography>
+        <Typography variant="subtitle1" gutterBottom>
+          {theater?.movie.title}
+        </Typography>
+        <DatePicker onDateChange={handleDateChange} />
         <Box mt={3}>
-          <Typography>
-            Asientos seleccionados:{" "}
-            {selectedSeats
-              .map((seat) => `(${seat.row}, ${seat.col})`)
-              .join(", ")}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-            onClick={handleOpenPaymentModal}
-          >
-            Reservar Asientos
-          </Button>
+          {theater?.capacity && (
+            <SeatGrid
+              rows={theater.capacity.rows}
+              cols={theater.capacity.cols}
+              seats={seats}
+              selectedSeats={selectedSeats}
+              onSeatSelect={handleSeatSelect}
+            />
+          )}
         </Box>
-      )}
+        {selectedSeats.length > 0 && (
+          <Box mt={3}>
+            <Typography>
+              Asientos seleccionados:{" "}
+              {selectedSeats
+                .map((seat) => `(${seat.row}, ${seat.col})`)
+                .join(", ")}
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              onClick={handleOpenPaymentModal}
+            >
+              Reservar Asientos
+            </Button>
+          </Box>
+        )}
 
-      <PaymentModal
-        open={isPaymentModalOpen}
-        onClose={handleClosePaymentModal}
-        theater={theater}
-        selectedDate={selectedDate}
-        selectedSeats={selectedSeats}
-        onPay={handlePay}
-        errorMessage={reservationError} // Puedes mostrar el error aquí si lo deseas
-      />
+        <PaymentModal
+          open={isPaymentModalOpen}
+          onClose={handleClosePaymentModal}
+          theater={theater}
+          selectedDate={selectedDate}
+          selectedSeats={selectedSeats}
+          onPay={handlePay}
+          errorMessage={reservationError} // Puedes mostrar el error aquí si lo deseas
+        />
 
-      <BookingSuccessModal
-        open={isBookingSuccessModalOpen}
-        onClose={handleCloseBookingSuccessModal}
-        bookingDetails={bookingConfirmationDetails}
-      />
-    </Box>
+        <BookingSuccessModal
+          open={isBookingSuccessModalOpen}
+          onClose={handleCloseBookingSuccessModal}
+          bookingDetails={bookingConfirmationDetails}
+        />
+      </Box>
+    </>
   );
 }
 

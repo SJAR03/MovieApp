@@ -9,6 +9,7 @@ import {
 import { fetchTheaterList } from "../services/TheaterService";
 import { Theater, TheaterListResponse } from "../interfaces/theater";
 import TheaterCard from "../components/TheaterCard";
+import AppNavbar from "../components/AppNavBar";
 
 function HomePage() {
   const [theaters, setTheaters] = useState<Theater[]>([]);
@@ -61,25 +62,31 @@ function HomePage() {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 2 }}>
-      <Grid container spacing={2}>
-        {theaters.map((theater) => (
-          <Grid key={theater.theaterId} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-            <TheaterCard {...theater} />
-          </Grid>
-        ))}
-      </Grid>
-      {pagination.totalPages > 1 && (
-        <Box mt={3} display="flex" justifyContent="center">
-          <Pagination
-            count={pagination.totalPages}
-            page={pagination.page}
-            onChange={handlePageChange}
-            color="primary"
-          />
-        </Box>
-      )}
-    </Box>
+    <>
+      <AppNavbar />
+      <Box sx={{ flexGrow: 1, padding: 2 }}>
+        <Grid container spacing={2}>
+          {theaters.map((theater) => (
+            <Grid
+              key={theater.theaterId}
+              size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+            >
+              <TheaterCard {...theater} />
+            </Grid>
+          ))}
+        </Grid>
+        {pagination.totalPages > 1 && (
+          <Box mt={3} display="flex" justifyContent="center">
+            <Pagination
+              count={pagination.totalPages}
+              page={pagination.page}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </Box>
+        )}
+      </Box>
+    </>
   );
 }
 
