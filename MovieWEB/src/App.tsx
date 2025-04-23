@@ -96,7 +96,7 @@ function App() {
           }
         />
 
-        {/* Proetected routes for admin*/}
+        {/* Protected routes for admin*/}
         <Route
           path="/admin"
           element={
