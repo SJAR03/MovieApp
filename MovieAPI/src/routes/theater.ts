@@ -1,9 +1,14 @@
 import express, { Router } from "express";
 import { authMiddleware } from "../middlewares/Auth/authMiddleware";
 import { roleMiddleware } from "../middlewares/Auth/roleMiddleware";
-import { registerTheater, listTheaters, getTheaterById, getTheaterSeatsByDate } from "../controllers/theaterController";
+import {
+  registerTheater,
+  listTheaters,
+  getTheaterById,
+  getTheaterSeatsByDate,
+  updateTheaterCapacity,
+} from "../controllers/theaterController";
 import { validateRegisterTheater } from "../middlewares/Theater/validateRegisterTheater";
-import { validateDateQuery } from "../middlewares/validateDate";
 
 const router: Router = express.Router();
 
@@ -207,5 +212,53 @@ router.get('/:id', authMiddleware, getTheaterById);
  *         description: Internal server error
  */
 router.get('/:id/seats', authMiddleware, getTheaterSeatsByDate);
+
+/**
+ * @swagger
+ * /theater/{id}/capacity:
+ *   put:
+ *     summary: Actualiza la capacidad (rows x cols) de una sala
+ *     tags: 
+ *       - Theater
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la sala
+ *     requestBody:
+ *       description: Nuevos valores de filas y columnas
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - rows
+ *               - cols
+ *             properties:
+ *               rows:
+ *                 type: integer
+ *                 example: 8
+ *               cols:
+ *                 type: integer
+ *                 example: 12
+ *     responses:
+ *       200:
+ *         description: Capacidad actualizada
+ *       400:
+ *         description: Datos inválidos
+ *       500:
+ *         description: Error interno
+ */
+router.put(
+  "/:id/capacity",
+  authMiddleware,
+  roleMiddleware(["Admin"]),
+  updateTheaterCapacity
+);
 
 export default router;

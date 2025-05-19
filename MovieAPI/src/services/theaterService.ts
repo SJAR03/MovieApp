@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Seats } from "@prisma/client";
 import { BadRequestError } from "../utils/ApiError";
 import { CreateTheaterPayload, TheaterWithMovie, SeatStatusResponse } from "../utils/types/theater";
 
@@ -72,6 +72,7 @@ export const listTheatersService = async (skip: number, limit: number) => {
     movieImage: t.movie.posterImage,
     theaterName: t.name,
     availableSeats: t.seats.length,
+    capacity: t.capacity,
   }));
 
   return { theaters: mapped, total };
@@ -121,6 +122,11 @@ export const getSeatsByDateService = async (
         theaterId,
         reservationDate: date,
       },
+      seats: {
+        statusId: {
+          not: 3, // Exclude inactive seats
+        }
+      }
     },
     include: {
       seats: {
@@ -146,3 +152,86 @@ export const getSeatsByDateService = async (
     statusId: reservedSeats.has(`${seat.row}-${seat.col}`) ? 2 : 1, // 2: reservado, 1: disponible
   }));
 };
+
+export const updateCapacityService = async (theaterId: number, newCols: number, newRows: number) => {
+  const theater = await prisma.theaters.findUnique({
+    where: { id: theaterId },
+    include: { seats: true }
+  });
+
+  if (!theater) throw new Error('Sala no encontrada');
+
+  const existingSeats = theater.seats;
+  const updatedCapacity = { cols: newCols, rows: newRows };
+
+  // Crear mapa de asientos actuales activos (por fila/columna)
+  const seatMap = new Map<string, Seats>();
+  for (const seat of existingSeats) {
+    const key = `${seat.row}-${seat.col}`;
+    seatMap.set(key, seat);
+  }
+
+  const seatsToCreate: { row: number; col: number; theaterId: number; statusId: number }[] = [];
+  const seatsToInactivate: number[] = [];
+
+  // Paso 1: Crear asientos nuevos si no existen
+  for (let row = 1; row <= newRows; row++) {
+    for (let col = 1; col <= newCols; col++) {
+      const key = `${row}-${col}`;
+      const seat = seatMap.get(key);
+      if (!seat) {
+        seatsToCreate.push({
+          row,
+          col,
+          theaterId,
+          statusId: 1 // Disponible
+        });
+      } else if (seat.statusId === 3) {
+        // Si estaba inactivo y ahora debe estar activo, lo reactivamos
+        await prisma.seats.update({
+          where: { id: seat.id },
+          data: { statusId: 1 }
+        });
+      }
+    }
+  }
+
+  // Paso 2: Inactivar asientos que están fuera del nuevo rango
+  for (const seat of existingSeats) {
+    if (seat.row > newRows || seat.col > newCols) {
+      if (seat.statusId !== 3) {
+        seatsToInactivate.push(seat.id);
+      }
+    }
+  }
+
+  // Crear nuevos asientos
+  if (seatsToCreate.length > 0) {
+    await prisma.seats.createMany({ data: seatsToCreate });
+  }
+
+  // Inactivar asientos fuera del rango
+  if (seatsToInactivate.length > 0) {
+    await prisma.seats.updateMany({
+      where: { id: { in: seatsToInactivate } },
+      data: { statusId: 3 }
+    });
+  }
+
+  // Actualizar capacidad en JSON
+  const updatedTheater = await prisma.theaters.update({
+    where: { id: theaterId },
+    data: {
+      capacity: updatedCapacity
+    },
+    include: { seats: true }
+  });
+
+  return {
+    message: 'Capacidad actualizada exitosamente.',
+    capacity: updatedCapacity,
+    seatsCreated: seatsToCreate.length,
+    seatsInactivated: seatsToInactivate.length,
+    theater: updatedTheater
+  };
+}

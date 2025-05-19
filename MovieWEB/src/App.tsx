@@ -9,6 +9,10 @@ import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 import { verifyToken } from "./services/AuthService";
 import { CircularProgress, Box } from "@mui/material";
+import CreateTheaterPage from "./pages/admin/CreateTheaterPage";
+import ManageTheatersPage from "./pages/admin/ManageTheatersPage";
+// import CreateMoviePage from "./pages/admin/CreateMoviePage";
+// import ManageMoviesPage from "./pages/admin/ManageMoviesPage";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -105,6 +109,38 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/admin/create-theater"
+          element={
+            <PrivateRoute>
+              <CreateTheaterPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/manage-theaters"
+          element={
+            <PrivateRoute>
+              <ManageTheatersPage />
+            </PrivateRoute>
+          }
+        />
+        {/* <Route
+          path="/admin/create-movie"
+          element={
+            <PrivateRoute>
+              <CreateMoviePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/manage-movies"
+          element={
+            <PrivateRoute>
+              <ManageMoviesPage />
+            </PrivateRoute>
+          }
+        /> */}
 
         {/* Wildcard route */}
         <Route path="*" element={<Navigate to="/" replace />} />
