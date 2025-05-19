@@ -1,5 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { registerTheaterService, listTheatersService, getTheaterDetailsService, getSeatsByDateService } from "../services/theaterService";
+import {
+  registerTheaterService,
+  listTheatersService,
+  getTheaterDetailsService,
+  getSeatsByDateService,
+  updateCapacityService,
+} from "../services/theaterService";
 import { CreateTheaterPayload } from "../utils/types/theater";
 import { getPaginationParams } from "../utils/helpers/paginationHelper";
 import { PaginationResponse } from "../utils/types/pagination";
@@ -55,3 +61,20 @@ export const getTheaterSeatsByDate = async (req: Request, res: Response) => {
   const seats = await getSeatsByDateService(theaterId, date);
   res.json(seats);
 };
+
+export const updateTheaterCapacity = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { cols, rows } = req.body;
+
+  if (!cols || !rows || cols <= 0 || rows <= 0) {
+    res.status(400).json({ message: 'Los valores de cols y rows deben ser mayores que 0.' });
+  }
+
+  try {
+    const result = await updateCapacityService(Number(id), cols, rows);
+    res.status(200).json(result);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || 'Error al actualizar la capacidad.' });
+  }
+}

@@ -26,3 +26,8 @@ export const registerMovieService = async (movieData: RegisterMovieRequest) => {
 
     return movie;
 }
+
+export const getMoviesService = async () => {
+    const movies = await prisma.movie.findMany();
+    return movies;
+}
