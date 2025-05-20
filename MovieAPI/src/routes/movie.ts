@@ -1,7 +1,12 @@
 import express, { Router } from 'express';
 import { authMiddleware } from "../middlewares/Auth/authMiddleware";
 import { roleMiddleware } from "../middlewares/Auth/roleMiddleware";
-import { registerMovie, getMovies } from "../controllers/movieController";
+import {
+  registerMovie,
+  getMovies,
+  updateMovie,
+  getMovieById,
+} from "../controllers/movieController";
 import {validateRegisterMovie} from "../middlewares/Movie/validateRegisterMovie";
 
 const router: Router = express.Router();
@@ -85,5 +90,71 @@ router.post("/register", authMiddleware, roleMiddleware(['Admin']), validateRegi
  *         description: Internal server error
  */
 router.get("/list", authMiddleware, roleMiddleware(['Admin']), getMovies);
+
+/**
+ * @swagger
+ * /movie/{id}:
+ *   put:
+ *     tags: 
+ *       - Movie
+ *     summary: Update a movie
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               title:
+ *                 type: string
+ *               posterImage:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Movie updated successfully
+ *       400:
+ *         description: Invalid request body
+ *       500:
+ *         description: Internal server error
+ */
+router.put("/:id", authMiddleware, roleMiddleware(['Admin']), validateRegisterMovie, updateMovie);
+
+/**
+ * @swagger
+ * /movie/{id}:
+ *   get:
+ *     summary: Get movie details
+ *     tags:
+ *       - Movie
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Movie details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id: { type: integer }
+ *                 title: { type: string }
+ *                 posterImage: { type: string }
+ *                 description: { type: string }
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/:id", authMiddleware, roleMiddleware(['Admin']), getMovieById);
 
 export default router;

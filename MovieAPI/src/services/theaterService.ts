@@ -235,3 +235,12 @@ export const updateCapacityService = async (theaterId: number, newCols: number, 
     theater: updatedTheater
   };
 }
+
+export const updateTheaterService = async (theaterId: number, name: string, movieId: number) => {
+  const theater = await prisma.theaters.update({
+    where: { id: theaterId },
+    data: { name, movieId },
+  });
+
+  return theater;
+};

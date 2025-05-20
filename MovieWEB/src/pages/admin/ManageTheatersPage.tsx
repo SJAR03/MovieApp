@@ -17,6 +17,8 @@ import {
   Alert,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import MovieIcon from "@mui/icons-material/Movie";
+import { useNavigate } from "react-router-dom";
 import {
   fetchTheaterListAdmin,
   TheaterItem,
@@ -24,7 +26,6 @@ import {
   updateTheaterCapacity,
 } from "../../services/AdminService";
 import CapacityVisualizer from "../../components/CapacityVisualizer";
-//import { useNavigate } from "react-router-dom";
 
 interface EditCapacityForm {
   rows: string;
@@ -59,7 +60,7 @@ const ManageTheatersPage: React.FC = () => {
     boolean | null
   >(null);
 
-  //const navigate = useNavigate();
+  const navigate = useNavigate(); // Inicializar useNavigate
 
   useEffect(() => {
     loadTheaters(1);
@@ -86,7 +87,8 @@ const ManageTheatersPage: React.FC = () => {
     loadTheaters(value);
   };
 
-  const handleOpenEditModal = (theaterId: number) => {
+  const handleOpenCapacityEditModal = (theaterId: number) => {
+    // Renombrado para claridad
     const theaterToEdit = theaters.find(
       (theater) => theater.theaterId === theaterId
     );
@@ -100,6 +102,11 @@ const ManageTheatersPage: React.FC = () => {
       setUpdateCapacityError(null);
       setUpdateCapacitySuccess(null);
     }
+  };
+
+  // **NUEVA FUNCIÓN: Navegar a la página de edición de detalles**
+  const handleEditDetailsClick = (theaterId: number) => {
+    navigate(`/admin/theaters/${theaterId}/edit-details`);
   };
 
   const handleCloseEditModal = () => {
@@ -121,15 +128,15 @@ const ManageTheatersPage: React.FC = () => {
     if (editingTheater) {
       setUpdateCapacityLoading(true);
       setUpdateCapacityError(null);
-      setUpdateCapacitySuccess(null); // Resetear el estado de éxito al iniciar la petición
+      setUpdateCapacitySuccess(null);
       try {
         await updateTheaterCapacity(editingTheater.theaterId, {
           rows: parseInt(editCapacityForm.rows),
           cols: parseInt(editCapacityForm.cols),
         });
-        setUpdateCapacitySuccess(true); // Establecer el estado de éxito
-        loadTheaters(pagination.page); // Recargar la lista para ver los cambios
-        setTimeout(handleCloseEditModal, 3500); // Cerrar el modal después de un breve éxito
+        setUpdateCapacitySuccess(true);
+        loadTheaters(pagination.page);
+        setTimeout(handleCloseEditModal, 3500);
       } catch (err: any) {
         setUpdateCapacityError(
           err.message || "Error al actualizar la capacidad"
@@ -189,12 +196,22 @@ const ManageTheatersPage: React.FC = () => {
                 secondary={`Película: ${theater.movieTitle} - Asientos disponibles: ${theater.availableSeats}`}
               />
               <ListItemSecondaryAction>
+                {/* Botón para editar Detalles (Nombre/Película) */}
                 <IconButton
                   edge="end"
-                  aria-label="edit"
-                  onClick={() => handleOpenEditModal(theater.theaterId)}
+                  aria-label="edit-details"
+                  onClick={() => handleEditDetailsClick(theater.theaterId)}
+                  sx={{ mr: 1 }} // Un poco de margen
                 >
-                  <EditIcon />
+                  <MovieIcon /> {/* Icono para la película/nombre */}
+                </IconButton>
+                {/* Botón para editar Capacidad (Modal existente) */}
+                <IconButton
+                  edge="end"
+                  aria-label="edit-capacity"
+                  onClick={() => handleOpenCapacityEditModal(theater.theaterId)} // Usar la función renombrada
+                >
+                  <EditIcon /> {/* Icono para la capacidad */}
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>
