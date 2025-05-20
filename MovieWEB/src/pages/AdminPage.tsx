@@ -26,15 +26,20 @@ const adminMenuItems: AdminMenuItem[] = [
     to: "/admin/manage-theaters",
     description: "Ver y modificar la información de las salas existentes.",
   },
-  {
-    label: "Crear película",
-    to: "/admin/create-movie",
-    description: "Añadir una nueva película al sistema.",
-  },
+  // {
+  //   label: "Crear película",
+  //   to: "/admin/create-movie",
+  //   description: "Añadir una nueva película al sistema.",
+  // },
   {
     label: "Gestionar películas",
     to: "/admin/manage-movies",
-    description: "Editar o eliminar películas existentes.",
+    description: "Crear o editar películas existentes.",
+  },
+  {
+    label: "Deshabilitar usuarios",
+    to: "/admin/manage-users",
+    description: "Deshabilitar usuarios del sistema.",
   },
   // Puedes añadir más opciones aquí
 ];

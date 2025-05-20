@@ -5,6 +5,7 @@ import {
   getTheaterDetailsService,
   getSeatsByDateService,
   updateCapacityService,
+  updateTheaterService,
 } from "../services/theaterService";
 import { CreateTheaterPayload } from "../utils/types/theater";
 import { getPaginationParams } from "../utils/helpers/paginationHelper";
@@ -76,5 +77,23 @@ export const updateTheaterCapacity = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: error.message || 'Error al actualizar la capacidad.' });
+  }
+}
+
+// Service to update the theater information, just name and the movie
+export const updateTheater = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, movieId } = req.body;
+
+  if (!name || !movieId) {
+    res.status(400).json({ message: 'Los valores de name y movieId son obligatorios.' });
+  }
+
+  try {
+    const result = await updateTheaterService(Number(id), name, movieId);
+    res.status(200).json(result);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || 'Error al actualizar la sala.' });
   }
 }
