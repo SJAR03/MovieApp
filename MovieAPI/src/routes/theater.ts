@@ -7,6 +7,7 @@ import {
   getTheaterById,
   getTheaterSeatsByDate,
   updateTheaterCapacity,
+  updateTheater,
 } from "../controllers/theaterController";
 import { validateRegisterTheater } from "../middlewares/Theater/validateRegisterTheater";
 
@@ -260,5 +261,48 @@ router.put(
   roleMiddleware(["Admin"]),
   updateTheaterCapacity
 );
+
+/**
+ * @swagger
+ * /theater/{id}:
+ *   put:
+ *     summary: Update a theater's details
+ *     tags: 
+ *       - Theater
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la sala
+ *     requestBody:
+ *       description: Nuevos para nombre y pelicula
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - movieId
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Avengers
+ *               movieId:
+ *                 type: integer
+ *                 example: 12
+ *     responses:
+ *       200:
+ *         description: Sala actualizada
+ *       400:
+ *         description: Datos inválidos
+ *       500:
+ *         description: Error interno
+ */
+router.put("/:id", authMiddleware, roleMiddleware(["Admin"]), updateTheater);
 
 export default router;
