@@ -69,6 +69,11 @@ export const loginUserService = async (credencials: LoginUserRequest) => {
     throw new UnauthorizedError("Invalid credentials");
   }
 
+  // Check if the user is active
+  if (!user.status) {
+    throw new UnauthorizedError("User is inactive");
+  }
+
   // Get the user role
   const userRole = await prisma.user_Role.findMany({
     where: {
