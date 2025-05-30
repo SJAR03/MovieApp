@@ -15,6 +15,7 @@ import ManageTheatersPage from "./pages/admin/ManageTheatersPage";
 // import CreateMoviePage from "./pages/admin/CreateMoviePage";
 import ManageMoviesPage from "./pages/admin/ManageMoviesPage";
 import ManageUsersPage from "./pages/admin/ManageUsersPage";
+import AdminReportPage from "./pages/admin/AdminReportPage";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -156,6 +157,14 @@ function App() {
           element={
             <PrivateRoute>
               <EditTheaterDetailsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/report"
+          element={
+            <PrivateRoute>
+              <AdminReportPage />
             </PrivateRoute>
           }
         />
