@@ -35,7 +35,7 @@ export const getSalesReportService = async () => {
   for (const theater of theaters) {
     const { rows, cols } = theater.capacity as { rows: number; cols: number };
     const seatsPerTheater = rows * cols;
-    totalSeats += seatsPerTheater * 8; // assuming each theater has one function per day
+    totalSeats += seatsPerTheater * 8;
   }
 
   const potentialLostIncome = (totalSeats - reservedSeats) * FIXED_PRICE;
