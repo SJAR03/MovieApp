@@ -41,7 +41,11 @@ const adminMenuItems: AdminMenuItem[] = [
     to: "/admin/manage-users",
     description: "Deshabilitar usuarios del sistema.",
   },
-  // Puedes añadir más opciones aquí
+  {
+    label: "Reporte de actividad",
+    to: "/admin/report",
+    description: "Estadísticas de reservas e ingresos de los próximos días.",
+  },
 ];
 
 const AdminPage: React.FC = () => {
